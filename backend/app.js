@@ -18,8 +18,15 @@ app.use((req, res, next) => {
 app.get('/meals', async (req, res) => {
   const meals = await fs.readFile('./data/available-meals.json', 'utf8');
   res.json(JSON.parse(meals));
-  res.json("HELLO! SADIQ")
+  // res.json("HELLO! SADIQ")
 });
+
+app.get('/',(req,res)=>{
+    res.send({
+        activeStatus:true,
+        error:false,
+    })
+})
 
 app.get('/meals/:id', async (req, res) => {
   try {
