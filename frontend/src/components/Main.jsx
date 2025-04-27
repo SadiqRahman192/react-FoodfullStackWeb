@@ -7,6 +7,7 @@ import logo from "../assets/logo.jpg";
 import CartContext from "../store/CartContext";
 import UserProgressContext from "../store/UserProgressContext.jsx";
 import { FaShoppingCart } from "react-icons/fa";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 export default function Main() {
   const userProgressCtx = useContext(UserProgressContext);
@@ -40,14 +41,9 @@ export default function Main() {
           <h1>TastyHub</h1>
         </div>
         <nav className={isMenuOpen ? "nav open" : "nav"}>
-          <Link
-            to="meals-section"
-            smooth={true}
-            duration={1000}
-            className="meals"
-          >
-            Menu
-          </Link>
+          <a href="/meals" className="meals">Menu</a>
+          <a href="/orders" className="meals">Order History</a>
+          <ThemeToggle/>
           <button className="logInBtn" onClick={handleOpenLogIn}>
             LogIn
           </button>

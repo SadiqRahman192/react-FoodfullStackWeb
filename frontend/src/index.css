@@ -9,13 +9,13 @@ body {
   font-family: "Raleway", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(#29251c, #2c2306);
-  color: #d9e2f1;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   min-height: 100vh;
 }
 
 #main-header {
-  background-color: #1d1a16;
+  background-color: var(--bg-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,6 +23,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
 }
 
 #main-header #title {
@@ -43,6 +44,12 @@ body {
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+
+#main-header .nav a{
+  color: var(--text-primary) !important;
+  border: none;
+  text-decoration: none;
 }
 
 #main-header .hamburger {
@@ -81,7 +88,7 @@ h1 {
   height: 100vh; /* Ensure the section takes up full screen height */
   /* position: relative; For positioning any content inside */
   transition: background-image 0.5s ease;
-  background-image: url("../public/Bg1.jpg"); /* Path to your image */
+  background-image: url("../public/heroFood.jpg"); /* Path to your image */
 }
 
 /* Content Container */
@@ -154,11 +161,12 @@ h1 {
 }
 
 .meal-item {
-  background-color: #1d1a16;
+  background-color: var(--card-bg);
   border-radius: 1rem;
   overflow: hidden;
   text-align: center;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
 }
 
 .meal-item article {
@@ -170,18 +178,24 @@ h1 {
 
 .meal-item img {
   width: 100%;
-  height: 20rem;
+  max-width: 220px;
+  max-height: 160px;
   object-fit: cover;
-}
+  border-radius: 12px;
+  margin: 0 auto;
+  display: block;
+}     
 
 .meal-item h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0.75rem 0;
+  color: var(--text-primary);
 }
 
 .meal-item-description {
   margin: 1rem;
+  color: var(--text-secondary);
 }
 
 .meal-item-price {
@@ -201,6 +215,7 @@ h1 {
 
 .cart h2 {
   margin: 1rem 0;
+  color: var(--text-primary);
 }
 
 .cart ul {
@@ -238,6 +253,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   margin: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .cart-item p {
@@ -288,7 +304,9 @@ h1 {
   font: inherit;
   padding: 0.5rem;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
 .control-row {
@@ -301,9 +319,9 @@ h1 {
   text-align: right;
   font: inherit;
   cursor: pointer;
-  background-color: #ffc404;
-  border: 1px solid #ffc404;
-  color: #1f1a09;
+  background-color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  color: var(--text-primary);
   padding: 0.5rem 1.5rem;
   border-radius: 4px;
 }
@@ -315,9 +333,8 @@ h1 {
 
 .button:hover,
 .button:active {
-  background-color: #ffab04;
-  border-color: #ffab04;
-  color: #1f1a09;
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 .logInBtn {
@@ -345,9 +362,9 @@ h1 {
 }
 
 .modal {
-  background-color: #e4ddd4;
+  background-color: var(--modal-bg);
   border-radius: 6px;
-  border: none;
+  border: 1px solid var(--border-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   padding: 1rem;
   width: 80%;
@@ -393,9 +410,10 @@ h1 {
 }
 
 .animated-icon {
-  font-size: 3rem;
+  margin-bottom: 2rem;
+  font-size: 2rem;
   color: #ffc404; /* Icon color */
-  animation: bounce 1s ease-in-out infinite; /* Apply animation */
+  animation: bounce 1.5s ease-in-out infinite; /* Apply animation */
 }
 
 .searchable-list {
@@ -411,7 +429,7 @@ h1 {
   border: 1px solid #ce930b;
   border-radius: 6px;
   background-color: #1e213000;
-  color: white;
+  color: #ce930b;
   font: inherit;
 }
 
@@ -592,13 +610,15 @@ h1 {
   padding: 20px;
   border-radius: 8px;
   font-family: Arial, sans-serif;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
 }
 
 /* Heading styling */
 .login-form-container h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 /* Form group styling */
@@ -616,9 +636,11 @@ h1 {
 .form-group input {
   width: 70%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   font-size: 14px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
 /* Required field styling */
@@ -641,6 +663,10 @@ h1 {
 
 .remember-me input {
   margin-right: 5px;
+}
+
+.remember-me label {
+  color: var(--accent-color);
 }
 
 .forgot-password {
@@ -706,8 +732,14 @@ h1 {
   opacity: 0.9;
 }
 
+.productDetailsModal {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .productDetailsModal img {
-  max-width: 100%;
+  max-width: 100%;  
   height: 50vh;
   display: block;
   margin: 0 auto;
@@ -729,13 +761,14 @@ h1 {
   justify-content: center;
   text-align: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.55); /* Dark background */
+  background-color: var(--bg-secondary);
   color: #fff; /* White text */
   text-align: center;
   padding: 20px 0; /* Padding for spacing */
   position: relative;
   bottom: 0;
   width: 100%;
+  border-top: 1px solid var(--border-color);
 }
 
 /* Footer Content */
@@ -749,6 +782,7 @@ h1 {
 .footer-text {
   font-size: 0.7rem;
   margin: 5px 0;
+  color: var(--text-secondary);
 }
 
 /* Footer Subtext */
@@ -783,18 +817,24 @@ h1 {
 }
 
 .meals {
-  /* background-color: #2563eb; */
-  color: #ffc404;
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.meals:hover {
-  color: white;
+.meals::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  background: var(--accent-color);
+  transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+  z-index: 2;
+}
+
+.meals:hover::after {
+  width: 100%;
 }
 
 /* /// prodDetails */
@@ -841,4 +881,346 @@ h1 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Theme Variables */
+:root {
+  --bg-primary: #fff;
+  --bg-secondary: #f7f7f7;
+  --text-primary: #222;
+  --text-secondary: #666;
+  --accent-color: #ffc404;
+  --accent-hover: #e6b000;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0,0,0,0.08);
+  --card-bg: #fff;
+  --modal-bg: #fff;
+  --input-bg: #fff;
+  --input-border: #e0e0e0;
+  --border-radius: 12px;
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --box-shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+  --transition-speed: 0.2s;
+}
+
+.dark-theme {
+  /* Dark Theme */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --accent-color: #ffc404;
+  --accent-hover: #e6b000;
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: #2d2d2d;
+  --modal-bg: #2d2d2d;
+  --input-bg: #404040;
+  --input-border: #505050;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-secondary);
+  transform: scale(1.1);  
+}
+
+.theme-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(15deg);
+}
+
+/* Update existing styles to use theme variables */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+#main-header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.meal-item {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.meal-item h3 {
+  color: var(--text-primary);
+}
+
+.meal-item-description {
+  color: var(--text-secondary);
+}
+
+.modal {
+  background-color: var(--modal-bg);
+  border: 1px solid var(--border-color);
+}
+
+.control input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+.button {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+}
+
+.button:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Update other components to use theme variables */
+.cart {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.cart h2 {
+  color: var(--accent-color);
+}
+
+.cart p {
+  color: var(--accent-color);
+}
+.cart-item {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.login-form-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.login-form-container h2 {
+  color: var(--accent-color);
+}
+
+.login-form-container p {
+  color: var(--accent-color);
+}
+
+.form-group input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+.footer {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-text {
+  color: var(--text-secondary);
+}
+
+/* Chatbot Styles */
+.chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.chatbot-toggle:hover {
+  transform: scale(1.1);
+}
+
+.chatbot {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(0,0,0,0.10);
+  border: 2px solid var(--accent-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  margin: 0.5rem;
+}
+
+.chatbot-header {
+  padding: 1rem;
+  background: var(--accent-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #fff2b2;
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.chatbot-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.chatbot-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--bg-secondary);
+}
+
+.message {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  animation: fadeIn 0.3s ease;
+}
+
+.message.user {
+  background: var(--accent-color);
+  color: white;
+  align-self: flex-end;
+}
+
+.message.bot {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  align-self: flex-start;
+}
+
+.chatbot-input {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  border-top: 1.5px solid #fff2b2;
+}
+
+.chatbot-input input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-color);
+  color: var(--text-primary);
+}
+
+.chatbot-input button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbot-input button:hover {
+  background: var(--accent-hover);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Chatbot */
+@media (max-width: 480px) {
+  .chatbot {
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  
+  .chatbot-toggle {
+    bottom: 10px;
+    right: 10px;
+  }
+}
+
+.meals, .MainSecBtn, .home, .logInBtn {
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Nav button hover for light mode */
+:root body .meals:hover,
+:root body .MainSecBtn:hover,
+:root body .home:hover,
+:root body .logInBtn:hover {
+  color: black !important;
+}
+
+/* Responsive: smaller images on tablets and phones */
+@media (max-width: 900px) {
+  .meal-item img {
+    max-width: 150px;
+    max-height: 110px;
+  }
+}
+
+@media (max-width: 600px) {
+  .meal-item img {
+    max-width: 120px;
+    max-height: 90px;
+  }
+}
+
+.dark-theme .meals:hover {
+  color: inherit !important;
 }

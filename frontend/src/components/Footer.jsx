@@ -27,11 +27,9 @@ const Footer = () => {
           Food
         </p>
       </div>
-      <div>
+      <div className="footer-arrow">
         <Link to="home-section" smooth={true} duration={500} className="home">
-        {/* <FaHome className="animated-icon" /> */}
         <FaArrowUp  className="animated-icon"/> 
-
         </Link>
       </div>
     </footer>
