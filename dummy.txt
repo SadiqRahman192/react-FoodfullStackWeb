@@ -1,0 +1,613 @@
+import { useContext } from "react";
+import CartContext from "../store/CartContext";
+import Modal from "./Ui/Modal";
+import UserProgressContext from "../store/UserProgressContext.jsx";
+import CartItem from "./CartItem.jsx";
+import Button from "./Ui/Button.jsx";
+import { currencyFormatter } from "../util/formatting.js";
+
+export default function Cart() {
+  const userProgressCtx = useContext(UserProgressContext);
+
+  function handleCloseCart() {  
+    userProgressCtx.hideCart();
+  }
+   
+  function handleOpenControlForm() {
+    userProgressCtx.showCheckOut();  
+    console.log('HELLO THIS IS CONTOL FORM'); // Note: This may not reflect the update due to setState being async
+}
+
+  const cartCtx = useContext(CartContext);
+  
+
+  const cartTotal = cartCtx.items.reduce(
+    (totalPrice, item) => totalPrice + item.quantity * item.price,
+    0
+  );
+  
+  /// this modal has prop named open it automaticallly add if check for u through usrprogrescomponent
+ //  onClose={handleCloseCart} bug cannot be fixed due cuz it removes the input componenet
+  return (
+    <>
+      <Modal className="cart" open={userProgressCtx.progress === "cart"} onClose={() => userProgressCtx.hideCart()}> 
+        <h2>Your Cart</h2>
+        <ul>
+          {cartCtx.items.map((item) => (
+            <CartItem
+              key={item.id} // NOTE :all item in such list should receieve a key
+              name={item.name} // Shorter way {...item} to get rid off manully * name={item.name} quantity={item.quantity} price={item.price}*
+              quantity={item.quantity}
+              price={item.price}
+              Ondecrease={() => cartCtx.addItem(item)}
+              Onincrease={() => cartCtx.removeItem(item.id)}
+            />
+          ))}
+        </ul>
+        <p className="cart-total">
+         {currencyFormatter.format(cartTotal)}
+        </p>
+        <p className="modal-actions">
+          <Button onClick={handleCloseCart}>Close</Button>
+          {cartCtx.items.length > 0 && (
+            <Button type="button" onClick={handleOpenControlForm}>Go to CheckOut</Button>
+          )}
+        </p>
+      </Modal>
+    </>
+  );
+}
+
+
+
+////////////
+
+ import Button from "./Ui/Button";
+import Modal from "./Ui/Modal.jsx";
+import { currencyFormatter } from "../util/formatting";
+import CartContext from "../store/CartContext.jsx";
+import { useContext } from "react";
+import UserProgressContext from "../store/UserProgressContext";
+import Input from "./Ui/Input";
+import useHttp from "../hooks/useHttps.js";
+import Error from "./Error.jsx";
+
+const requestConfig = {
+  /// WE create ConfigRequest outside of the component Func To avoid INFINITE LOOP
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+
+export default function ControlForm() {
+  const cartCtx = useContext(CartContext);
+  const userProgressCtx = useContext(UserProgressContext);
+  // console.log(userProgressCtx.progress)
+
+  console.log("ControlForm progress:", userProgressCtx.progress);
+
+  const {
+    data,
+    isLoading: isSending,
+    error,
+    sendRequest,
+    clearData,
+  } = useHttp("http://localhost:3000/orders", requestConfig);
+
+  const cartTotal = cartCtx.items.reduce(
+    (totalPrice, item) => totalPrice + item.quantity * item.price,
+    0
+  );
+
+  function handleCloseCart() {
+    userProgressCtx.hideCheckOut();
+  }
+
+  function handleFinish() {
+    userProgressCtx.hideCheckOut();
+    cartCtx.clearCart();
+    clearData();
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const fd = new FormData(event.target); // New form Data is a method provided by the browser to get hold the user entered values in an object Note inorder to work this method correctly u must add name attribute to every input.
+    //    fd.get('name')
+    const customerData = Object.fromEntries(fd.entries()); // it will provide e.g {email:test@gmail.com}
+
+    sendRequest(
+      JSON.stringify({
+        order: {
+          items: cartCtx.items,
+          customer: customerData,
+        },
+      })
+    );
+  }
+
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={handleCloseCart}>
+        Close
+      </Button>
+      <Button>Submit Order!</Button>
+    </>
+  );
+
+  if (isSending) {
+    actions = <span>Data is sending...</span>;
+  }
+
+  if (data && !error) {
+    return (
+      <Modal
+        open={userProgressCtx.progress === "checkout"}
+        onClose={handleFinish}
+      >
+        <div className="center">
+          <h2>Success!</h2>
+          <p>
+            Your order has been placed successfully we get your order dispach
+            soon with an eamil{" "}
+          </p>
+          <p>We will get back soon in Minutes</p>
+          <p className="modal-actions">
+            <Button onClick={handleFinish}>Okay</Button>
+          </p>
+        </div>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal open={userProgressCtx.progress === "checkout"}>
+        {" "}
+        <form onSubmit={handleSubmit}>
+          <h2>Checkout</h2>
+          <p>Total Amount:{currencyFormatter.format(cartTotal)}</p>
+          <Input label="Name" type="text" id="name" />
+          <Input label="E-Mail Address" type="email" id="email" />
+          <Input label="Street" type="text" id="street" />
+          <div className="control-row">
+            <Input label="Postal Code" type="text" id="postal-code" />
+            <Input label="City" type="text" id="city" />
+          </div>
+          {error && (
+            <Error
+              title={"NOT FOUND Your Data!"}
+              message={"An Error Occured!"}
+            />
+          )}
+          <p className="modal-actions">{actions}</p>
+        </form>
+    </Modal>
+  );
+}
+
+
+ 
+
+
+ /////////////////
+
+
+import Main from './components/Main.jsx';
+import Meals from './components/Meals.jsx';
+import Cart from './components/Cart.jsx';
+import Footer from './components/Footer.jsx';
+import HomeSection from './components/HomeSection.jsx';
+import HowItWorks from './components/HowItWorks.jsx';
+import ProductDetailsModal from './components/ProductDetailsModal.jsx';
+import Chatbot from './components/Chatbot.jsx';
+import OrderHistory from './components/OrderHistory.jsx';
+import { CartContextProvider } from './store/CartContext.jsx';
+import  UserProgressContext from './store/UserProgressContext.jsx'
+import ControlForm from './components/ControlForm.jsx'
+import { ThemeProvider } from './context/ThemeContext.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthContextProvider } from './store/AuthContext';
+import './index.css';
+import LoginForm from './components/LoginForm.jsx';
+import SignupForm from './components/SignupForm.jsx';
+import { useContext } from 'react';
+import { UserProgressContextProvider } from './store/UserProgressContext.jsx';
+
+function App() {
+  const userProgressCtx = useContext(UserProgressContext);
+
+  return (
+    <ThemeProvider> 
+      <AuthContextProvider>
+        <UserProgressContextProvider>
+          <CartContextProvider>
+            <Router>
+              <div className="app">
+                <Main />
+                <HomeSection />
+                <HowItWorks />
+                <Routes>
+                  <Route path="/meals" element={<Meals />} />
+                  <Route path="/orders" element={<OrderHistory />} />
+                </Routes>
+                <ProductDetailsModal /> 
+                <Footer />
+                <Cart />
+                <LoginForm />
+                <SignupForm />
+                <ControlForm />
+                <Chatbot />
+              </div>
+            </Router>
+          </CartContextProvider>
+        </UserProgressContextProvider>
+      </AuthContextProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;
+
+//////////////////
+
+
+import { createContext, useState,useEffect } from "react";
+
+const UserProgressContext = createContext({
+    progress: '', // "cart" , "checkout"
+    showCart: () => {},
+    hideCart: () => {},
+    showCheckOut: () => {},
+    hideCheckOut: () => {},
+    showLogInForm: () => {},
+    hideLogInForm: () => {},
+    showSignUpForm: () => {},
+    hideSignUpForm: () => {},
+    showProdDetailsModal: () => {},
+    hideProdDetailsModal: () => {}
+})
+
+export function UserProgressContextProvider({ children }) {
+    //    useReducer();
+
+    
+
+   const [userProgress, setUserProgress] = useState();
+
+
+
+    function showCart() {
+        setUserProgress('cart');
+    }
+
+   function hideCart() {
+    setUserProgress('');
+   }
+
+   function showCheckOut() {
+    setUserProgress('checkout')
+   }
+
+   function hideCheckOut() {
+    setUserProgress('')
+   }
+
+   function showLogInForm(){
+    setUserProgress('logInForm')
+   }
+
+   function hideLogInForm(){
+    setUserProgress('')
+   }
+   
+   function showSignupForm() {
+    setUserProgress('signUpForm')
+   }
+
+   function hideSignupForm() {
+    setUserProgress('')
+   }
+
+
+   function showProdDetailsModal() {
+    setUserProgress('productDetailsModal')
+   }
+    
+   function hideProdDetailsModal() {
+    setUserProgress('')
+   }
+
+   useEffect(() => {
+    console.log('Progress updated to:', userProgress);
+}, [userProgress]);
+   
+   const userProgressCtx = {
+    progress: userProgress,
+    showCart,
+    hideCart,
+    showCheckOut,
+    hideCheckOut,
+    showLogInForm,
+    hideLogInForm,
+    showSignupForm,
+    hideSignupForm,
+    showProdDetailsModal,
+    hideProdDetailsModal
+   }
+   
+
+    return(
+        <UserProgressContext.Provider value={userProgressCtx}>{children}</UserProgressContext.Provider>
+    )
+}
+
+export default UserProgressContext;
+
+
+
+
+
+
+
+
+
+
+
+///////////////////
+
+
+
+
+
+.modal {
+  background-color: var(--modal-bg);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+  width: 80%;
+  max-width: 40rem;
+  animation: fade-slide-up 0.3s ease-out forwards;
+}
+
+.dark-theme .modal {
+  background-color: var(--modal-bg);
+  color: white;
+}
+
+.modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+////////////
+
+
+
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+
+export default function Modal({ children, onClose, open, className = "" }) {
+  const dialog = useRef();
+
+  useEffect(() => {
+    const modal = dialog.current;
+    if (open && modal) {
+      modal.showModal();
+    }
+    return () => {
+      if (modal) modal.close();
+    };
+  }, [open]);
+
+  const handleBackdropClick = (event) => {
+    if (event.target === dialog.current) {
+      onClose();
+    }
+  };
+
+  return createPortal(
+    <dialog
+      ref={dialog}
+      className={`modal ${className}`}
+      onClose={onClose}
+      onClick={handleBackdropClick}
+    >
+      {children}
+    </dialog>,
+    document.getElementById("modal")
+  );
+}
+
+
+background-color: #ffd580; /* For buttons or backgrounds */
+  color: #ffd580;
+
+
+
+  /////////////
+
+
+
+
+  import { createContext, useState, useContext, useEffect } from "react";
+import { validateEmail, validatePassword, validateName } from "../utils/validation";
+
+const AuthContext = createContext({
+  isAuthenticated: false,
+  user: null,
+  login: () => {},
+  logout: () => {},
+  signup: () => {},
+  loginWithGoogle: () => {},
+  loginWithFacebook: () => {},
+  error: null,
+  loading: false,
+});
+
+export function AuthContextProvider({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  async function login(email, password) {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Validate inputs
+      if (!validateEmail(email)) {
+        throw new Error('Invalid email format');
+      }
+      if (!validatePassword(password)) {
+        throw new Error('Invalid password format');
+      }
+
+      // In a real app, this would be an API call
+      // Simulating API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // For demo purposes, we'll use a hardcoded user
+      if (email === 'demo@example.com' && password === 'Demo@123') {
+        const userData = {
+          email,
+          name: 'Demo User',
+          id: '1',
+        };
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem('user', JSON.stringify(userData));
+        return true;
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (err) {
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function signup(name, email, password) {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Validate inputs
+      if (!validateName(name)) {
+        throw new Error('Name must be at least 2 characters and contain only letters');
+      }
+      if (!validateEmail(email)) {
+        throw new Error('Invalid email format');
+      }
+      if (!validatePassword(password)) {
+        throw new Error('Invalid password format');
+      }
+
+      // In a real app, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const userData = {
+        email,
+        name,
+        id: Date.now().toString(),
+      };
+      setUser(userData);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function loginWithGoogle() {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // In a real app, this would use Google OAuth
+      // For demo, we'll simulate the process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const userData = {
+        email: 'google@example.com',
+        name: 'Google User',
+        id: 'google-1',
+      };
+      setUser(userData);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function loginWithFacebook() {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // In a real app, this would use Facebook OAuth
+      // For demo, we'll simulate the process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const userData = {
+        email: 'facebook@example.com',
+        name: 'Facebook User',
+        id: 'facebook-1',
+      };
+      setUser(userData);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function logout() {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('user');
+  }
+
+  const value = {
+    isAuthenticated,
+    user,
+    login,
+    logout,
+    signup,
+    loginWithGoogle,
+    loginWithFacebook,
+    error,
+    loading,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+} 

@@ -1,70 +1,82 @@
-import { useContext,useState, useRef } from "react";
+import { useContext, useState } from "react";
 import React from "react";
-import { Link } from "react-scroll"; // Import the scroll component
-
-import Button from "./Ui/Button.jsx";
+import { Link } from "react-scroll";
 import logo from "../assets/logo.jpg";
 import CartContext from "../store/CartContext";
 import UserProgressContext from "../store/UserProgressContext.jsx";
 import { FaShoppingCart } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle.jsx";
+import { useAuth } from "../store/AuthContext";
 
-export default function Main() {
+function Main() {
   const userProgressCtx = useContext(UserProgressContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-
+  const { isAuthenticated, user, logout } = useAuth();
   const { items } = useContext(CartContext);
 
-  let totalCartItems = items.length;
+  const totalCartItems = items.reduce((total, item) => total + item.quantity, 0);
 
   function handleOpenCartClick() {
     userProgressCtx.showCart();
   }
 
-  function handleOpenLogIn() {
+  function handleOpenLoginForm() {
     userProgressCtx.showLogInForm();
-    console.log("LogInForm Opened!");
+    console.log("loginFormFuncRan")
   }
 
-  const cartCtx = useContext(CartContext);
+  function handleOpenSinUpForm() {
+    userProgressCtx.showSignupForm();
+    console.log("SignUpFormFuncRan")
+  }
 
-  totalCartItems = cartCtx.items.reduce((totalNumbersOfItems, item) => {
-    return totalNumbersOfItems + item.quantity;
-  }, 0);
+  function handleLogout() {
+    logout();
+  }
 
   return (
-    <>
-      <header id="main-header">
-        <div id="title">
-          <img src={logo} alt="logo" />
-          <h1>TastyHub</h1>
-        </div>
-        <nav className={isMenuOpen ? "nav open" : "nav"}>
-          <a href="/meals" className="meals">Menu</a>
-          <a href="/orders" className="meals">Order History</a>
-          <ThemeToggle/>
-          <button className="logInBtn" onClick={handleOpenLogIn}>
-            LogIn
-          </button>
-          <Button onClick={handleOpenCartClick}>
-            <FaShoppingCart style={{ fontSize: "18px", color: "black" }} />
-            <span style={{ marginLeft: "8px" }}>Cart</span> ({totalCartItems})
-          </Button>
-        </nav>
-        <button
-          className="hamburger"
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-          aria-label="Toggle menu"
-        >
-          <div className="line"></div>
-          <div className="line"></div>
-          <div className="line"></div>
+    <header id="main-header">
+      <div id="title">
+        <img src={logo} alt="logo" />
+        <h1>TastyHub</h1>
+      </div>
+      <nav className={isMenuOpen ? "open" : ""}>
+        <a href="/meals">Menu</a>
+        <a href="/orders">Order History</a>
+        <ThemeToggle />
+        {!isAuthenticated ? (
+          <>
+            <button onClick={handleOpenLoginForm} className="login-btn">
+              LogIn
+            </button>
+            <button className="signup-btn" onClick={handleOpenSinUpForm}>
+              SignUp Today
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="welcome-text">Welcome, {user?.name}</span>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </>
+        )}
+        <button onClick={handleOpenCartClick} className="cart-btn">
+          <FaShoppingCart />
+          <span>Cart ({totalCartItems})</span>
         </button>
-      </header>
-    </>
+      </nav>
+      <button
+        className="hamburger"
+        onClick={() => setIsMenuOpen((prev) => !prev)}
+        aria-label="Toggle menu"
+      >
+        <div className="line"></div>
+        <div className="line"></div>
+        <div className="line"></div>
+      </button>
+    </header>
   );
 }
 
-// /* <ControlForm ref={controlForm}/> */ ln return onheader ln : 45
-// /* <CartModal ref={modal} title="Your Cart" /> */  ln return onheader ln : 46
+export default Main;

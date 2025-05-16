@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
-//  import UserProgressContext from "../store/UserProgressContext";
 import Modal from "./Ui/Modal";
 import Button from "./Ui/Button";
 import CartContext from "../store/CartContext";
-// import Button from "./Ui/Button";
+import UserProgressContext from "../store/UserProgressContext.jsx";
+
 
 const ProductDetailsModal = ({ meal, onClose }) => {
+  const userProgressCtx = useContext(UserProgressContext);
+
   if (!meal) return null;
 
   console.log(meal.image);
@@ -16,20 +18,12 @@ const ProductDetailsModal = ({ meal, onClose }) => {
     cartCtx.addItem(meal);
   }
 
-  //  function handleOpenCartClick() {
-  //   UserprogressCtx.showCart();
-  // }
-
-  // function handleOpenProdDetailsModal() {
-  //   UserprogressCtx.showProdDetailsModal();
-  // }
-
-  // function handleCloseProdDetailsModal() {
-  //   UserprogressCtx.hideProdDetailsModal();
-  // }
+  function handleCloseProdDetailsModal() {
+    userProgressCtx.hideProdDetailsModal()
+  }
 
   return (
-    <Modal className="productDetailsModal" open={true}>
+    <Modal className="productDetailsModal" open={true} onClose={() => userProgressCtx.hideProdDetailsModal()}>
       <div>
         <img
           src={`http://localhost:3000/${meal.image}`}

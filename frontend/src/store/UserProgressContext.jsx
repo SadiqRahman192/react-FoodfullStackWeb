@@ -1,54 +1,75 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const UserProgressContext = createContext({
-    progress: '', // "cart" , "checkout"
-    showCart: () => {},
-    hideCart: () => {},
-    showCheckOut: () => {},
-    hideCheckOut: () => {},
-    showLogInForm: () => {},
-    hideLogInForm: () => {},
-    showProdDetailsModal: () => {},
-    hideProdDetailsModal: () => {}
-})
+  progress: "",
+  showCart: () => {},
+  hideCart: () => {},
+  showCheckOut: () => {},
+  hideCheckOut: () => {},
+  showLogInForm: () => {},
+  hideLogInForm: () => {},
+  showSignUpForm: () => {},
+  hideSignUpForm: () => {},
+  showProdDetailsModal: () => {},
+  hideProdDetailsModal: () => {},
+});
 
 export function UserProgressContextProvider({ children }) {
-    //    useReducer();
-   const [userProgress, setUserProgress] = useState();
+  const [userProgress, setUserProgress] = useState("");
 
-   function showCart() {
-    setUserProgress('cart');
-   }
+  function showCart() {
+    setUserProgress("cart");
+  }
 
-   function hideCart() {
-    setUserProgress('');
-   }
+  function hideCart() {
+    setUserProgress("");
+  }
 
-   function showCheckOut() {
-    setUserProgress('checkout')
-   }
+  // function showCheckOut() {
+  //   setUserProgress(""); // Reset to avoid modal conflicts
+  //   setUserProgress("checkout");
+  // }
 
-   function hideCheckOut() {
-    setUserProgress('')
-   }
+  function showCheckOut() {
+    setUserProgress(''); // Reset to close other modals
+    setTimeout(() => setUserProgress('checkout'), 0); // Set in next tick
+  }
 
-   function showLogInForm(){
-    setUserProgress('LogInForm')
-   }
+  function hideCheckOut() {
+    setUserProgress("");
+  }
 
-   function hideLogInForm(){
-    setUserProgress('')
-   }
+  function showLogInForm() {
+    setUserProgress(''); // Reset to close other modals
+    setTimeout(() => setUserProgress('logInForm'), 0); // Set in next tick
+  }
 
-   function showProdDetailsModal() {
-    setUserProgress('productDetailsModal ')
-   }
-    
-   function hideProdDetailsModal() {
-    setUserProgress('')
-   }
-   
-   const userProgressCtx = {
+  function hideLogInForm() {
+    setUserProgress("");
+  }
+
+  function showSignupForm() {
+    setUserProgress(''); // Reset to close other modals
+    setTimeout(() => setUserProgress('signUpForm'), 0); // Set in next tick
+  }
+
+  function hideSignupForm() {
+    setUserProgress("");
+  }
+
+  function showProdDetailsModal() {
+    setUserProgress("productDetailsModal");
+  }
+
+  function hideProdDetailsModal() {
+    setUserProgress("");
+  }
+
+  useEffect(() => {
+    console.log("Progress updated to:", userProgress);
+  }, [userProgress]);
+
+  const userProgressCtx = {
     progress: userProgress,
     showCart,
     hideCart,
@@ -56,14 +77,17 @@ export function UserProgressContextProvider({ children }) {
     hideCheckOut,
     showLogInForm,
     hideLogInForm,
+    showSignupForm,
+    hideSignupForm,
     showProdDetailsModal,
-    hideProdDetailsModal
-   }
-   
+    hideProdDetailsModal,
+  };
 
-    return(
-        <UserProgressContext.Provider value={userProgressCtx}>{children}</UserProgressContext.Provider>
-    )
+  return (
+    <UserProgressContext.Provider value={userProgressCtx}>
+      {children}
+    </UserProgressContext.Provider>
+  );
 }
 
 export default UserProgressContext;
