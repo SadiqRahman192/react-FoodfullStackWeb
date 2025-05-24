@@ -15,7 +15,7 @@ export default function MealItem({ meal, onShowDetails }) { // onShowDetails
     <li className="meal-item">
       <article>
         <img
-          src={`http://localhost:3000/${meal.image}`}
+          src={`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/${meal.image}`}
           alt={meal.name}
           onClick={() => onShowDetails(meal)} // Trigger details fetch on image click
         />
