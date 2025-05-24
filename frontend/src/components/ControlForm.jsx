@@ -28,7 +28,7 @@ function ControlForm() {
     error,
     sendRequest,
     clearData,
-  } = useHttp("http://localhost:3000/orders", requestConfig);
+  } = useHttp(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/orders`, requestConfig);
 
   const cartTotal = cartCtx.items.reduce(
     (totalPrice, item) => totalPrice + item.quantity * item.price,
