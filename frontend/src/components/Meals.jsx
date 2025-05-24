@@ -15,7 +15,7 @@ export default function Meals() {
     data: loadMeals,
     isLoading,
     error,
-  } = useHttp("http://localhost:3000/meals", requestConfig, []);
+  } = useHttp(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/meals`, requestConfig, []);
 
   if (isLoading) {
     return <p className="center">Fetching meals...</p>;
